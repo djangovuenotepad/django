@@ -1,0 +1,199 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+""" 
+import hashlib
+import traceback
+
+
+class JKBApi:
+    def __init__(self, user_email, user_pwd, client_id, client_secret):
+        self.user = user_email
+        self.pwd = user_pwd
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.base_url = "https://v6-api-os.jiankongbao.com"
+        self.headers = {
+            "token": self.get_token()
+        }
+
+    def get_token(self):
+        url_path = "/userapi/common/apitoken"
+        md5_hash = hashlib.md5()
+        md5_hash.update(self.pwd.encode('utf-8'))
+        pwd_md5 = md5_hash.hexdigest()
+        params = {
+            "user_email": self.user,
+            "user_pwd": pwd_md5,
+            "client_id": self.client_id,
+            "client_secret": self.client_secret
+        }
+        try:
+            res = requests.get(f'{self.base_url}{url_path}', timeout=30, params=params)
+            return res.json()['token']
+        except Exception as e:
+            print(e)
+
+    def get_tasks_list(self, task_list=None, page_num=1):
+        """获取任务列表"""
+        if task_list is None:
+            task_list = []
+        url_path = "/siteapi/tasks/list"
+        params = {
+            "current_page": page_num,
+            "page_size": 50
+        }
+        res_data = requests.post(f'{self.base_url}{url_path}', headers=self.headers, timeout=30, json=params).json()
+        total_page = res_data['pagination']['total_pages']
+        task_list.extend(res_data['data'])
+        if total_page > page_num:
+            page_num += 1
+            self.get_tasks_list(task_list, page_num)
+        return task_list
+
+    def update_task(self, task_id, task_name, url):
+        """更新任务"""
+        url_path = f"/siteapi/tasks/task/{task_id}"
+        params = {
+            "url": url,
+            "task_name": task_name
+        }
+        res = requests.put(f'{self.base_url}{url_path}', headers=self.headers, timeout=30, json=params)
+        if res.status_code != 200:
+            print(log_time(), res.text)
+            raise Exception("请求监控宝API not 200！")
+        return res.status_code
+
+
+def get_apollo_using_domain(_type=None):
+    _apollo_domain = [] 
+        apollo_domain_type = res['msg']
+    for _domain in apollo_doma 
+        if _domain['business'] == 'gateway':
+            url = f'https://{_domain["domain_name"]}/vers 
+    qp_project_task = []
+    all_task_list = client.get_tasks_list()
+    for _task in all_task_list:
+        _task_name = _task['task_name']
+        for _type in qp_type:
+            if _type in _task_name:
+                qp_project_task.append(_task)
+    return qp_project_task
+
+
+def log_time():
+    return time.strftime("%F %T", time.localtime(time.time()))
+
+
+def send_mango(_msg):
+    data = {'token': '123321', 'gro 
+    qp_jkb_domain = get_jkb_using_domain(client=_jkb_client)
+    qp_jkb_domain_list = [i['task_name'] for i in qp_jkb_domain]
+
+    
+    apollo_domain = get_apollo_using_domain()
+    apollo_domain_list = [i['task_name'] for i in apollo_domain]
+
+    #  apollo_using_domain(_type='zhanwei')
+    apollo_zhanwei_domain_list = [i['task_name'] for i in apollo_zhanwei_domain]
+   
+    print(log_time(), text1)
+
+    jkb_can_delete_domain = list(set(qp_jkb_domain_list).difference(set(apollo_domain_list)))
+    zhanwei_and_jkb_ domain = jkb_can_delete_domain[::]
+
+    # 监控宝里的占位域名也添加到监控宝可下线列表
+    for _zhanwei_domain in apollo_zhanwei_domain_list:
+        if _zhanwei_domain not in apollo_domain_list:
+            if _zhanwei_domain in qp_jkb_domain:
+                zhanwei_and_jkb_can_delete_domain.append(_zhanwei_domain)
+
+    list1 = []
+    list2 = []
+    for _list1 in zhanwei_and_jkb_can_delete_domain:
+        if _list1 in apollo_zhanwei_domain_list:
+            list1.append(_list1)
+        else:
+            list2.append(_list1)
+    zhanwei_and_jkb_can_delete_domain_sort = list1 + list2
+    jkb_can_add_domain = list(set(apollo_domain_list).difference(set(qp_jkb_domain_list)))
+    copy_jkb_can_add_domain = jkb_can_add_domain[::]
+    domain_len = f'监控宝配置域名{len(qp_jkb_domain_list)}个  Apollo在用域名{len(apollo_domain_list)}个\n'
+    msg += domain_len
+    print(domain_len)
+    if not ApolloIsAllInJKB:
+        text2 = f'\n监控宝可下线域名: {zhanwei_and_jkb_can_delete_domain_sort}\n'
+        msg += text2
+        pprint.pprint(text2)
+        text3 = f'监控宝待上线域名: {jkb_can_add_domain}\n'
+        msg += text3
+        pprint.pprint(text3)
+        for waiting_online_domain in jkb_can_add_domain:
+            if not zhanwei_and_jkb_can_delete_domain_sort:
+                str_list = '\n'.join(copy_jkb_can_add_domain)
+                text4 = f"\ r_list}\n"
+                msg += text4
+                print(log_time(), text4)
+                break
+            offline_domain = zhanwei_and_jkb_can_delete_domain_sort.pop()
+            online_domain_task_id = ''
+            online_domain_url = ''
+            for qp_jkb_domain_task in qp_jkb_domain:
+                if offline_domain == qp_jkb_domain_task['task_name']:
+                    online_domain_task_id = qp_jkb_domain_task['task_id']
+            for online_domain in apollo_domain + apollo_zhanwei_domain:
+                if waiting_online_domain == online_domain['task_name']:
+                    online_domain_url = online_domain['url'] :2002',
+                                    data=json.dumps({"status": 'post', "task_id": online_domain_task_id, "task_name": waiting_online_domain}))
+                print(
+                    f'requests check_jkb_replace_is_recover 记录Apollo替换域名时的时间 {waiting_online_domain} {rsp.text}')
+
+        send_mango(_msg=msg)
+
+    # 监控宝下线没在apollo使用的域名，替换为占位域名
+    elif jkb_can_delete_domain:
+        print("监 can_delete_domain)
+        apollo_zhanwei_domain = get_apollo_using_domain(_type='zhanwei')
+        apollo_zhanwei_domain_list = [i['task_name'] for i in apollo_zhanwei_domain]
+
+        # 如果监控宝里的域名是占位域名则不进行下线处理
+        for _jkb_delete in jkb_can_delete_domain[::]:
+            if _jkb_delete in apollo_zhanwei_domain_list:
+jsbasdfdweasdfidoasdfng@itcasdfom8asdf88.comasdf
+AasdfBasdfitasdfcom8asdf88.comasdf1231asdf23
+465f6e900ae514495330ee156ca261db8a5e0
+replace asdf ''
+
+        # 如果占位域名已经配置在监控宝，或者占位域名是apollo在用域名则踢出待上线列表
+        for _zw_domain in apollo_zhanwei_domain_list[::]:
+            if _zw_domain in qp_jkb_domain_list or _zw_domain in apollo_domain_list:
+                apollo_zhanwei_domain_list.remove(_zw_domain)
+
+        copy_jkb_can_delete_domain = jkb_can_delete_domain[::]
+        for waiting_offline_domain in jkb_can_delete_domain:
+            if not apollo_zhanwei_domain_list:
+                str_list = '\n'.join(copy_jkb_can_delete_domain)
+                text4 =  ⚠️以下域名无占位域名替换下线，请在apollo增加占位域名！！\n{str_list}\n"
+                msg += text4
+                print(log_time(), text4)
+                break
+            online_domain = apollo_zhanwei_domain_list.pop()
+            offline_domain_task_id = ''
+            online_domain_url = ''
+            for qp_jkb_domain_task in qp_jkb_domain:
+                if waiting_offline_domain == qp_jkb_domain_task['task_name']:
+                    offline_domain_task_id = qp_jkb_domain_task['task_id']
+            for _zhanwei_online_domain in apollo_domain + apollo_zhanwei_domain:
+                if online_domain == _zhanwei_online_domain['task_name']:
+                    online_domain_url = _zhanwei_online_domain['url']
+            print(
+                f"{log_time()} 等待上线ID:{offline_domain_task_id}    等待上线task:{online_domain}    等待上线url:{online_domain_url}")
+            Online_operation = _jkb_client.update_task(task_id=offline_domain_task_id, task_name=online_domain,
+                                                       url=online_domain_url)
+            if Online_operation == 200:
+                text6 = f"\n✅上线 {online_domain} \n☑️下线 {waiting_offline_domain}\n"
+                copy_jkb_can_delete_domain.remove(waiting_offline_domain)
+                msg += text6
+                print(log_time(), text6)
+                # requests che 
+
+
